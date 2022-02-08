@@ -19,28 +19,10 @@ import static niu.winson.enumation.ErrorCode.DATABASE_ERROR;
 @RestController
 @RequestMapping(value = "/aop")
 public class aopTestController {
-//    @Autowired
-//    OperationLoggerDao operationLoggerDao;
-
-//    @Autowired
-//    JDBCConfig jdbcConfig;
 
     @OperationLogger(Name = "捕捉useApiLog", Type = OperationType.UPDATE)
     @RequestMapping(value = "/test", method = RequestMethod.POST)
     public ResultVO useApiLog(@RequestBody String args) {
-//        ResultVO result=new ResultVO();
-//        result.setError_code("0");
-//        result.setError_msg("成功");
-//        result.setShow_msg("ResultV0 成功！");
-//        String msg=new String();
-//        try {
-//            ObjectMapper om = new ObjectMapper();
-//            msg = om.writeValueAsString(result);
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-//        return msg;
-
 
         OperLog operLog=new OperLog();
         operLog.setOperUserID("803");
@@ -59,8 +41,6 @@ public class aopTestController {
     @OperationLogger(Name = "捕捉hello",Type= OperationType.INSERT)
     @RequestMapping(value = "/hello", method = RequestMethod.POST)
     public ResultVO hello(@RequestBody String args) {
-//        ResultVO result=new ResultVO();
-//        result.setMsg("I'am Hello");
         String data=new String();
         Map<String,Object> map=new HashMap<String,Object>();
         Map<String,Object> map1=new HashMap<String,Object>();
