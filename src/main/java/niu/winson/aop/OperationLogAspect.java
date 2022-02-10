@@ -193,10 +193,11 @@ public class OperationLogAspect {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return "参数异常";
         }
 
-        return null;
+        return "参数空";
     }
 }
 

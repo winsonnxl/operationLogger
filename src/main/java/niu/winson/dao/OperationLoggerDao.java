@@ -69,7 +69,7 @@ public class OperationLoggerDao {
                 return true;
             }
         }catch(Exception e){
-            e.getMessage();
+            System.out.println(e.getMessage());
         }finally {
             resultset.close();
             conn.close();
@@ -78,15 +78,17 @@ public class OperationLoggerDao {
     }
 
     public Integer insertOperationLogger(OperLog operLog) throws SQLException {
+        int intResult=0;
         try {
             if (!init()) {
                 getJdbcTemplate().execute(create);
             }
             String sql = "insert into operation_logger(oper_user_id,oper_api_name,oper_method,oper_ip,oper_time,oper_type,oper_url,oper_args,oper_result) values(?,?,?,?,?,?,?,?,?)";
-            return getJdbcTemplate().update(sql, operLog.getOperUserID(), operLog.getOperApiName(), operLog.getOperMethod(), operLog.getOperIP(), operLog.getOperTime(), operLog.getOperType(), operLog.getOperURL(), operLog.getOperArgs(), operLog.getOperReuslt());
-        }catch (SQLException e){
-            e.getMessage();
-            return 0;
+            intResult=getJdbcTemplate().update(sql, operLog.getOperUserID(), operLog.getOperApiName(), operLog.getOperMethod(), operLog.getOperIP(), operLog.getOperTime(), operLog.getOperType(), operLog.getOperURL(), operLog.getOperArgs(), operLog.getOperReuslt());
+            return intResult;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return intResult;
         }
     }
 }
