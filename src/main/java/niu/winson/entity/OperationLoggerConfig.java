@@ -1,13 +1,12 @@
 package niu.winson.entity;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
 //@PropertySource("classpath:/application.properties")
-public class JDBCConfig {
+public class OperationLoggerConfig {
     @Value("${niu.OperationLogger.database.DriverClassName}")
     private String DriverClassName;
 
@@ -22,6 +21,18 @@ public class JDBCConfig {
 
     @Value("${niu.OperationLogger.FailLog}")
     private Boolean FailLog;
+
+    public static String SystemID;
+
+    public String getSystemID() {
+        return SystemID;
+    }
+
+
+    @Value("${niu.OperationLogger.System:NULL}")
+    public void setSystemID(String systemID) {
+        SystemID = systemID;
+    }
 
     public Boolean getFailLog() {
         return FailLog;

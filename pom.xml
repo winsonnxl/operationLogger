@@ -7,7 +7,7 @@
     <groupId>niu.winson</groupId>
     <artifactId>operationlogger</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.04</version>
 
     <developers>
         <developer>

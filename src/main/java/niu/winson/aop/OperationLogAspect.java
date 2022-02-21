@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import niu.winson.annotation.OperationLogger;
 import niu.winson.dao.OperationLoggerDao;
-import niu.winson.entity.JDBCConfig;
+import niu.winson.entity.OperationLoggerConfig;
 import niu.winson.entity.OperLog;
 import niu.winson.entity.ResultVO;
 import niu.winson.enumation.OperationType;
@@ -35,7 +35,7 @@ public class OperationLogAspect {
     OperationLoggerDao operationLoggerDao;
 
     @Autowired
-    JDBCConfig jdbcConfig;
+    OperationLoggerConfig operationLoggerConfig;
 
     private static final String UNKNOWN = "unknown";
 
@@ -80,13 +80,12 @@ public class OperationLogAspect {
     public void afterReturningMethod(ResultVO msg)  {
         try {
             Integer db_result=0;
-            if (msg.getError_code() == "0" || jdbcConfig.getFailLog()) {
+            if (msg.getError_code() == "0" || operationLoggerConfig.getFailLog()) {
                 operlog.setOperReuslt(msg.toString());
                 db_result=operationLoggerDao.insertOperationLogger(operlog);
             }
         }catch (Exception e){
-            System.out.println("@AfterReturnning: 数据库操作失败！");
-            e.getMessage();
+            System.out.println("@AfterReturnning: 数据库操作失败！\n"+e.getMessage());
         }
     }
 
@@ -171,7 +170,7 @@ public class OperationLogAspect {
     /***
      * 获取header中的 Token 或 Authorization 的 UserID
      * */
-    private String getUserID(HttpServletRequest request) {
+    private String getUserID(HttpServletRequest request) throws Exception {
         String token = request.getHeader("Token");
         String authorization = request.getHeader("Authorization");
         String[] parts = null;
@@ -189,11 +188,11 @@ public class OperationLogAspect {
                     String token_payload = new String(decoded);
                     JsonNode jsonNode = mapper.readTree(token_payload);
                     JsonNode name = jsonNode.get("id");
-                    return name.toString();
+                    return name.textValue();
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Token解析错误，未找到‘id’\n"+e.getMessage());
             return "参数异常";
         }
 

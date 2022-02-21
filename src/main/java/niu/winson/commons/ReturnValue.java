@@ -1,10 +1,12 @@
 package niu.winson.commons;
 
+
 import niu.winson.entity.ResultVO;
 import niu.winson.enumation.ErrorCode;
 
 
 public class ReturnValue {
+
     public static ResultVO SUCCESS(Object data){
         return new ResultVO(ErrorCode.SUCCESS,data);
     }

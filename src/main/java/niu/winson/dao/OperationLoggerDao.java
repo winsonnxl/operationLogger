@@ -1,6 +1,6 @@
 package niu.winson.dao;
 
-import niu.winson.entity.JDBCConfig;
+import niu.winson.entity.OperationLoggerConfig;
 import niu.winson.entity.OperLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class OperationLoggerDao {
 
     @Autowired
-    JDBCConfig jdbcConfig;
+    OperationLoggerConfig operationLoggerConfig;
 
     String tableName = "operation_logger";//表名
     String create = "CREATE TABLE `operation_logger` (\n" +
@@ -37,10 +37,10 @@ public class OperationLoggerDao {
     public DriverManagerDataSource getDataSources()  {
         try {
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
-            dataSource.setDriverClassName(jdbcConfig.getDriverClassName());
-            dataSource.setUrl(jdbcConfig.getUrl());
-            dataSource.setUsername(jdbcConfig.getUserName());
-            dataSource.setPassword(jdbcConfig.getPassword());
+            dataSource.setDriverClassName(operationLoggerConfig.getDriverClassName());
+            dataSource.setUrl(operationLoggerConfig.getUrl());
+            dataSource.setUsername(operationLoggerConfig.getUserName());
+            dataSource.setPassword(operationLoggerConfig.getPassword());
             return dataSource;
         }catch(Exception e){
             System.out.println("OperationLoggerDao.java->getDataSources()  数据据库配置读取错误！！！\n"+e.getMessage());
