@@ -17,8 +17,10 @@ public class OperationLoggerDao {
 
     @Autowired
     OperationLoggerConfig operationLoggerConfig;
-
-    String tableName = "operation_logger";//表名
+    /**
+     * 表名
+     * */
+    String tableName = "operation_logger";
     String create = "CREATE TABLE `operation_logger` (\n" +
             "  `id` int(8) NOT NULL AUTO_INCREMENT COMMENT '主键自增',\n" +
             "  `oper_user_id` varchar(50) NOT NULL COMMENT '操作者ID',\n" +
@@ -30,8 +32,9 @@ public class OperationLoggerDao {
             "  `oper_time` varchar(20) NOT NULL COMMENT '操作时间',\n" +
             "  `oper_args` varchar(15000) NOT NULL COMMENT '传入参数',\n" +
             "  `oper_result` varchar(5000) NOT NULL COMMENT '操作结果',\n" +
+            "`system_id` varchar(60) NOT NULL COMMENT '系统编码,读取application.properties中niu.OperationLogger.System数值',\n"+
             "  PRIMARY KEY (`id`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='操作日志表';";
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台操作日志表';";
 
 
     public DriverManagerDataSource getDataSources()  {
@@ -53,23 +56,26 @@ public class OperationLoggerDao {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSources());
             return jdbcTemplate;
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("OperationLoggerDao->JdbcTemplate:\n"+e.getMessage());
             return null;
         }
     }
 
     public boolean init() throws SQLException{
+        //System.out.println("进入 init()");
         Connection conn= getJdbcTemplate().getDataSource().getConnection();
         ResultSet resultset=null;
         String[] types= {"TABLE"};
         try {
             DatabaseMetaData databaseMetaData=conn.getMetaData();
-            resultset=databaseMetaData.getTables(null,null,tableName,types);
+            resultset=databaseMetaData.getTables(operationLoggerConfig.getDatabaseName(),null,tableName,types);
+            //System.out.println("连接数据库，检索表是否存在");
             if(resultset.next()){
+                //System.out.println("连接数据库，检索表存在");
                 return true;
             }
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("perationLoggerDao->init:\n"+e.getMessage());
         }finally {
             resultset.close();
             conn.close();
@@ -78,16 +84,21 @@ public class OperationLoggerDao {
     }
 
     public Integer insertOperationLogger(OperLog operLog) throws SQLException {
+        //System.out.println("进入 insertOperationLogger()");
         int intResult=0;
         try {
+            //System.out.println("即将判断表是否存在");
             if (!init()) {
                 getJdbcTemplate().execute(create);
+                //System.out.println("完成创建表");
             }
-            String sql = "insert into operation_logger(oper_user_id,oper_api_name,oper_method,oper_ip,oper_time,oper_type,oper_url,oper_args,oper_result) values(?,?,?,?,?,?,?,?,?)";
-            intResult=getJdbcTemplate().update(sql, operLog.getOperUserID(), operLog.getOperApiName(), operLog.getOperMethod(), operLog.getOperIP(), operLog.getOperTime(), operLog.getOperType(), operLog.getOperURL(), operLog.getOperArgs(), operLog.getOperReuslt());
+            String sql = "insert into operation_logger(oper_user_id,oper_api_name,oper_method,oper_ip,oper_time,oper_type,oper_url,oper_args,oper_result,system_id) values(?,?,?,?,?,?,?,?,?,?)";
+            //System.out.println("即将插入数据");
+            intResult=getJdbcTemplate().update(sql, operLog.getOperUserID(), operLog.getOperApiName(), operLog.getOperMethod(), operLog.getOperIP(), operLog.getOperTime(), operLog.getOperType(), operLog.getOperURL(), operLog.getOperArgs(), operLog.getOperReuslt(),operLog.getOperSystemID());
+            //System.out.println("完成插入数据");
             return intResult;
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("perationLoggerDao->insertOperationLogger:\n"+e.getMessage());
             return intResult;
         }
     }

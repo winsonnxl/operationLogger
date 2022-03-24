@@ -4,6 +4,7 @@ package niu.winson.entity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import niu.winson.enumation.ErrorCode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,18 +14,70 @@ import javax.servlet.http.HttpServletRequest;
 // 统一请求的返回对象
 public class ResultVO<T> {
 
-    //"对应平台编码"
+    /**
+     * "对应平台编码"
+     */
     private String system_id;
 
-   //"错误代码"
-    private String error_code;//错误代码
+    /**
+     * "错误代码"
+     */
+    private String error_code;
 
-    //"消息"
-    private String error_msg;//错误信息
+    /**
+     * "消息"
+     */
+    private String error_msg;
 
-    //"返回数据"
-    private T data;//传输数据
+    /**
+     * "返回数据"
+     */
+    private T data;
 
+    private String str_get_SystemID;
+
+    public ResultVO(String errorCode, String errorMsg, T data) {
+        if (CheckSystemID()) {
+            setSystem_id(str_get_SystemID);
+            setError_code(getError_code());
+            setError_msg(getError_msg());
+        } else {
+            //setSystem_id(getSystemID());
+            setSystem_id(str_get_SystemID);
+            setError_code(errorCode);
+            setError_msg(errorMsg);
+        }
+        setData(data);
+    }
+
+    public ResultVO(ErrorCode errorCode, T data) {
+        if (CheckSystemID()) {
+            setSystem_id(str_get_SystemID);
+            setError_code(getError_code());
+            setError_msg(getError_msg());
+        } else {
+            //setSystem_id(getSystemID());
+            setSystem_id(str_get_SystemID);
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
+        }
+
+        setData(data);
+    }
+
+    public ResultVO(ErrorCode errorCode) {
+        if (CheckSystemID()) {
+            setSystem_id( str_get_SystemID);
+            setError_code(getError_code());
+            setError_msg(getError_msg());
+        } else {
+            //setSystem_id(getSystemID());
+            setSystem_id(str_get_SystemID);
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
+        }
+
+    }
 
     @Override
     public String toString() {
@@ -36,42 +89,47 @@ public class ResultVO<T> {
                 '}';
     }
 
-    /*
-    *核对请求接口是不是为当前系统
-    * */
-    private Boolean CheckSystemID(){
-       try {
-        if(getSystemID().equals(OperationLoggerConfig.SystemID) || OperationLoggerConfig.SystemID.equals("NULL")){
-            return true;
-        }else{
+    /**
+     * 核对请求接口是不是为当前系统
+     */
+    private Boolean CheckSystemID() {
+        //String token_header_systemid = getSystemID();
+        str_get_SystemID=getSystemID();
+        try {
+            if (!OperationLoggerConfig.SystemID.equals("NULL")) {
+                if (!str_get_SystemID.equals(OperationLoggerConfig.SystemID)) {
+                    setSystem_id(str_get_SystemID);
+                    setError_code("UNKNOW");
+                    setError_msg("非平台请求！");
+                    return false;
+                }
+                return true;
+            }else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("ResultVO->CheckSystemID: \n" + e.getMessage());
             setSystem_id("UNKNOW");
             setError_code("UNKNOW");
             setError_msg("非平台请求！");
             return false;
         }
-       }catch (Exception e){
-           System.out.println(e.getMessage());
-           setSystem_id("UNKNOW");
-           setError_code("UNKNOW");
-           setError_msg("非平台请求！");
-           return false;
-       }
     }
 
-    /*
-    * 通过接口请求，获取Token中的System编码
-    * */
+    /**
+     * 通过接口请求，获取Token或Header中的System编码
+     */
     private String getSystemID() {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String token = request.getHeader("Token");
         String authorization = request.getHeader("Authorization");
-        String systemid=request.getHeader("SystemID");
+        String systemid = request.getHeader("SystemID");
         String[] parts = null;
-        if (token != null) {
+        if (StringUtils.isNotEmpty(token)) {
             parts = token.split("\\.");
         }
-        if (authorization != null) {
+        if (StringUtils.isNotEmpty(authorization)) {
             parts = authorization.split("\\.");
         }
         try {
@@ -81,48 +139,24 @@ public class ResultVO<T> {
                     byte[] decoded = Base64.decodeBase64(parts[1]);
                     String token_payload = new String(decoded);
                     JsonNode jsonNode = mapper.readTree(token_payload);
-                    JsonNode name = jsonNode.get("system");
-                    return name.textValue();
+                    JsonNode system = jsonNode.get("system");
+                    if(system==null){
+                        return "token参数异常";
+                    }
+                        return system.textValue();
                 }
-            }else{
-                if(systemid != null){
-                    return systemid.trim().toString();
+            } else {
+                if (StringUtils.isNotEmpty(systemid)) {
+                    return systemid.trim();
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("ResultVO->getSystemID: Exception \n" + e.getMessage());
             return "参数异常";
         }
 
         return "参数空";
     }
-
-    public ResultVO(String errorCode,String errorMsg, T data) {
-        if(CheckSystemID()) {
-            setSystem_id(OperationLoggerConfig.SystemID);
-            setError_code(errorCode);
-            setError_msg(errorMsg);
-            setData(data);
-        }
-    }
-
-    public ResultVO(ErrorCode errorCode, T data) {
-        if(CheckSystemID()) {
-            setSystem_id(OperationLoggerConfig.SystemID);
-            setError_code(errorCode.getCode());
-            setError_msg(errorCode.getMsg());
-            setData(data);
-        }
-    }
-
-    public ResultVO(ErrorCode errorCode) {
-        if(CheckSystemID()) {
-            setSystem_id(OperationLoggerConfig.SystemID);
-            setError_code(errorCode.getCode());
-            setError_msg(errorCode.getMsg());
-        }
-    }
-
 
     public String getError_code() {
         return error_code;
@@ -153,6 +187,6 @@ public class ResultVO<T> {
     }
 
     public void setSystem_id(String system_id) {
-        this.system_id=system_id;
+        this.system_id = system_id;
     }
 }

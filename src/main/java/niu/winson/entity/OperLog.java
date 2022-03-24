@@ -15,6 +15,7 @@ public class OperLog {
     private String operTime;//操作时间
     private String operReuslt;//操作状态，是否成功
     private String operApiName;//接口名称，读取@注解中的Name
+    private String operSystemID;
 
     @Override
     public String toString() {
@@ -103,4 +104,11 @@ public class OperLog {
         this.operUserID = operUserID;
     }
 
+    public String getOperSystemID() {
+        return operSystemID;
+    }
+
+    public void setOperSystemID(String operSystemID) {
+        this.operSystemID = operSystemID;
+    }
 }

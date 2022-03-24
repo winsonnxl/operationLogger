@@ -7,7 +7,7 @@
     <groupId>niu.winson</groupId>
     <artifactId>operationlogger</artifactId>
     <packaging>jar</packaging>
-    <version>1.04</version>
+    <version>1.08</version>
 
     <developers>
         <developer>
@@ -55,11 +55,11 @@
         </dependency>
 
         <!--配置文件加密-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.ulisesbocchio</groupId>-->
-<!--            <artifactId>jasypt-spring-boot-starter</artifactId>-->
-<!--            <version>3.0.4</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.ulisesbocchio</groupId>-->
+        <!--            <artifactId>jasypt-spring-boot-starter</artifactId>-->
+        <!--            <version>3.0.4</version>-->
+        <!--        </dependency>-->
 
     </dependencies>
 
@@ -70,7 +70,8 @@
                 <excludes>
                     <exclude>**/*.yml</exclude>
                     <exclude>**/*.properties</exclude>
-                    <exclude>niu.winson.operationLoggerApplication.java</exclude>
+                    <exclude>**/*.xml</exclude>
+                    <exclude>niu.winson.OperationLoggerApplication.java</exclude>
                 </excludes>
                 <filtering>true</filtering>
             </resource>

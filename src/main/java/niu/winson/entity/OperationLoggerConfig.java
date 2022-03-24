@@ -1,11 +1,13 @@
 package niu.winson.entity;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * @author niu
+ */
 @Component
-//@PropertySource("classpath:/application.properties")
 public class OperationLoggerConfig {
     @Value("${niu.OperationLogger.database.DriverClassName}")
     private String DriverClassName;
@@ -19,10 +21,30 @@ public class OperationLoggerConfig {
     @Value("${niu.OperationLogger.database.Password}")
     private String Password;
 
+    /**
+     * 配合ResultVO封装使用。TRUE表示接口执行接口成功或失败都记录。FALSE表示接口执行成功才记录。
+     * */
     @Value("${niu.OperationLogger.FailLog}")
     private Boolean FailLog;
 
+    /**
+    *非必填项，系统编码
+    */
     public static String SystemID;
+
+    /**
+     * 非必填项，适配MySQL数据库，同一个MySQL Server下有多个库，用于指定库下创建table
+     * */
+    public static String DatabaseName;
+
+    public static String getDatabaseName() {
+        return DatabaseName;
+    }
+
+    @Value("${niu.OperationLogger.DatabaseName:NULL}")
+    public static void setDatabaseName(String databaseName) {
+        DatabaseName = databaseName;
+    }
 
     public String getSystemID() {
         return SystemID;

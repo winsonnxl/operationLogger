@@ -14,13 +14,18 @@ public enum ErrorCode {
     PARAMETER_MISSING_ERROR("10002","参数缺少错误"),
     // 用户登录方面错误码
     LOGIN_ERROR("101001", "你还未登陆,请及时登陆"),
-    TOKEN_ERROR("101002", "登录凭证已过期，请重新登录"),
+    TOKEN_ERROR("101002", "登录凭证错误"),
+    LOGIN_KEY_ERROR("101003", "账号密码错误"),
     //数据库操作错误码
     DATABASE_ERROR("202001","数据库操作错误！"),
     UPDATE_DATABASE_ERROR("202002","数据库更新失败"),
     INSERT_DATABASE_ERROR("202002","数据库插入失败"),
     SELECT_DATABASE_ERROR("202002","数据库查询失败"),
     DELETE_DATABASE_ERROR("202002","数据库删除失败"),
+
+    NOTFOUND_ERROR("700001","未找到该条记录"),
+    QUOTE_ERROR("700002", "该记录已被引用"),
+    QRCODE_ERROR("700003", "生成二维码失败"),
     //未知错误码
     UNKNOWN_ERROR("900001","未知错误异常");
 

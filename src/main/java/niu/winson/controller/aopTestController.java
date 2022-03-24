@@ -32,7 +32,7 @@ public class aopTestController {
             //operationLoggerDao.insertOperationLogger(operLog);
             return ReturnValue.FAIL(DATABASE_ERROR);
         }catch (Exception e){
-            e.getMessage();
+            System.out.println("aopTestController->useApiLog:Exception \n");e.getMessage();
             return ReturnValue.FAIL(DATABASE_ERROR);
         }
 
