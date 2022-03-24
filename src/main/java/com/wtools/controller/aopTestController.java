@@ -1,19 +1,19 @@
-package niu.winson.controller;
+package com.wtools.controller;
 
-import niu.winson.annotation.OperationLogger;
-import niu.winson.entity.OperLog;
-import niu.winson.entity.ResultVO;
-import niu.winson.enumation.OperationType;
+import com.wtools.annotation.OperationLogger;
+import com.wtools.commons.ReturnValue;
+import com.wtools.entity.OperLog;
+import com.wtools.entity.ResultVO;
+import com.wtools.enumation.ErrorCode;
+import com.wtools.enumation.OperationType;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import niu.winson.commons.ReturnValue;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import static niu.winson.enumation.ErrorCode.DATABASE_ERROR;
 
 
 @RestController
@@ -30,10 +30,10 @@ public class aopTestController {
         operLog.setOperMethod("插入Method");
         try {
             //operationLoggerDao.insertOperationLogger(operLog);
-            return ReturnValue.FAIL(DATABASE_ERROR);
+            return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
         }catch (Exception e){
             System.out.println("aopTestController->useApiLog:Exception \n");e.getMessage();
-            return ReturnValue.FAIL(DATABASE_ERROR);
+            return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
         }
 
     }

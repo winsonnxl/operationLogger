@@ -1,4 +1,4 @@
-package niu.winson.enumation;
+package com.wtools.enumation;
 
 public enum OperationType {
     SELECT("查询"),

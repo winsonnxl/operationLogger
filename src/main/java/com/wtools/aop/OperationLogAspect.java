@@ -1,14 +1,14 @@
-package niu.winson.aop;
+package com.wtools.aop;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import niu.winson.annotation.OperationLogger;
-import niu.winson.dao.OperationLoggerDao;
-import niu.winson.entity.OperLog;
-import niu.winson.entity.OperationLoggerConfig;
-import niu.winson.entity.ResultVO;
-import niu.winson.enumation.ErrorCode;
-import niu.winson.enumation.OperationType;
+import com.wtools.annotation.OperationLogger;
+import com.wtools.dao.OperationLoggerDao;
+import com.wtools.entity.OperLog;
+import com.wtools.entity.OperationLoggerConfig;
+import com.wtools.entity.ResultVO;
+import com.wtools.enumation.ErrorCode;
+import com.wtools.enumation.OperationType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -45,7 +45,7 @@ public class OperationLogAspect {
     @Autowired
     OperationLoggerConfig operationLoggerConfig;
 
-    @Pointcut("@annotation(niu.winson.annotation.OperationLogger)")
+    @Pointcut("@annotation(com.wtools.annotation.OperationLogger)")
     public void OperationLogger() {
     }
 

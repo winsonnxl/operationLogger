@@ -1,8 +1,8 @@
-package niu.winson.commons;
+package com.wtools.commons;
 
 
-import niu.winson.entity.ResultVO;
-import niu.winson.enumation.ErrorCode;
+import com.wtools.entity.ResultVO;
+import com.wtools.enumation.ErrorCode;
 
 
 public class ReturnValue {

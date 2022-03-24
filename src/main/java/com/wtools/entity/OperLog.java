@@ -1,8 +1,7 @@
-package niu.winson.entity;
+package com.wtools.entity;
 
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 
 @Component
 public class OperLog {

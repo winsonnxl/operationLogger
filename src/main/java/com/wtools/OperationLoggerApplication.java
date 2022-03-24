@@ -1,4 +1,4 @@
-package niu.winson;
+package com.wtools;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

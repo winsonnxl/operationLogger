@@ -1,4 +1,4 @@
-package niu.winson.enumation;
+package com.wtools.enumation;
 
 import org.omg.CORBA.UNKNOWN;
 

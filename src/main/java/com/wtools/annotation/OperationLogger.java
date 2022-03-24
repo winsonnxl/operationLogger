@@ -1,6 +1,6 @@
-package niu.winson.annotation;
+package com.wtools.annotation;
 
-import niu.winson.enumation.OperationType;
+import com.wtools.enumation.OperationType;
 
 import java.lang.annotation.*;
 

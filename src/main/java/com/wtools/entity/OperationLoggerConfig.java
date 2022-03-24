@@ -1,4 +1,4 @@
-package niu.winson.entity;
+package com.wtools.entity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
