@@ -1,9 +1,9 @@
-package com.wtools.entity;
+package niu.winson.entity;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wtools.enumation.ErrorCode;
+import niu.winson.enumation.ErrorCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.context.request.RequestContextHolder;

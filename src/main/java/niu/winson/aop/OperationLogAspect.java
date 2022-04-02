@@ -1,14 +1,14 @@
-package com.wtools.aop;
+package niu.winson.aop;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wtools.annotation.OperationLogger;
-import com.wtools.dao.OperationLoggerDao;
-import com.wtools.entity.OperLog;
-import com.wtools.entity.OperationLoggerConfig;
-import com.wtools.entity.ResultVO;
-import com.wtools.enumation.ErrorCode;
-import com.wtools.enumation.OperationType;
+import niu.winson.annotation.OperationLogger;
+import niu.winson.dao.OperationLoggerDao;
+import niu.winson.entity.OperLog;
+import niu.winson.entity.OperationLoggerConfig;
+import niu.winson.entity.ResultVO;
+import niu.winson.enumation.ErrorCode;
+import niu.winson.enumation.OperationType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -45,14 +45,14 @@ public class OperationLogAspect {
     @Autowired
     OperationLoggerConfig operationLoggerConfig;
 
-    @Pointcut("@annotation(com.wtools.annotation.OperationLogger)")
+    @Pointcut("@annotation(niu.winson.annotation.OperationLogger)")
     public void OperationLogger() {
     }
 
 
     @Around("OperationLogger() && @annotation(operationLogger)")
-    public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperationLogger operationLogger) throws Throwable {
-        try {
+    public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperationLogger operationLogger) throws Throwable,Exception {
+        //try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
 
@@ -74,24 +74,24 @@ public class OperationLogAspect {
             operlog.setOperSystemID(operationLoggerConfig.getSystemID());
             Object obj = proceedingJoinPoint.proceed();
             return obj;
-        } catch (Exception e) {
-            System.out.println("OperationLogAspect->aroundMethod:Exception \n"+e.getMessage());
-            return null;
-        }
+        //} catch (Exception e) {
+           // System.out.println("OperationLogAspect->aroundMethod:Exception \n"+e.getMessage());
+           // return null;
+       // }
     }
 
     @AfterReturning(pointcut = "OperationLogger()", returning = "msg")
-    public void afterReturningMethod(ResultVO<Object> msg) {
-        try {
+    public void afterReturningMethod(ResultVO<Object> msg) throws Exception{
+        //try {
             if (msg.getError_code() == ErrorCode.SUCCESS.getCode() || operationLoggerConfig.getFailLog()) {
                 operlog.setOperReuslt(msg.toString());
                 if(operationLoggerDao.insertOperationLogger(operlog)!=1){
                     System.out.println("@AfterReturnning: 数据插入失败！\n");
                 }
             }
-        } catch (Exception e) {
-            System.out.println("@AfterReturnning: 数据库操作失败！\n" + e.getMessage());
-        }
+       // } catch (Exception e) {
+        //    System.out.println("@AfterReturnning: 数据库操作失败！\n" + e.getMessage());
+       // }
     }
 
     @After("OperationLogger()")
@@ -104,7 +104,7 @@ public class OperationLogAspect {
      * @param proceedingJoinPoint
      * @return 注解名称
      */
-    private OperationLogger getAnnotation(ProceedingJoinPoint proceedingJoinPoint) {
+    private OperationLogger getAnnotation(ProceedingJoinPoint proceedingJoinPoint) throws Exception {
         return ((MethodSignature) proceedingJoinPoint.getSignature()).getMethod().getAnnotation(OperationLogger.class);
     }
 
@@ -114,7 +114,7 @@ public class OperationLogAspect {
      * @param proceedingJoinPoint
      * @return
      */
-    private OperationType getOperationType(ProceedingJoinPoint proceedingJoinPoint) {
+    private OperationType getOperationType(ProceedingJoinPoint proceedingJoinPoint) throws Exception {
         return getAnnotation(proceedingJoinPoint).Type();
     }
 
@@ -124,7 +124,7 @@ public class OperationLogAspect {
      * @param proceedingJoinPoint
      * @return
      */
-    private String getMethodName(ProceedingJoinPoint proceedingJoinPoint) {
+    private String getMethodName(ProceedingJoinPoint proceedingJoinPoint) throws Exception{
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         return methodSignature.getMethod().getDeclaringClass().getName() + "." + methodSignature.getMethod().getName();
     }

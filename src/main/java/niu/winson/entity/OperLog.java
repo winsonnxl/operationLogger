@@ -1,4 +1,4 @@
-package com.wtools.entity;
+package niu.winson.entity;
 
 import org.springframework.stereotype.Component;
 
