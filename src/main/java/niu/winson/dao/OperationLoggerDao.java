@@ -1,17 +1,25 @@
 package niu.winson.dao;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.mysql.cj.xdevapi.JsonArray;
 import niu.winson.entity.OperLog;
 import niu.winson.entity.OperationLoggerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * @author EDZ
+ */
 @Repository
 public class OperationLoggerDao {
 
@@ -62,16 +70,13 @@ public class OperationLoggerDao {
     }
 
     public boolean init() throws SQLException{
-        //System.out.println("进入 init()");
         Connection conn= getJdbcTemplate().getDataSource().getConnection();
         ResultSet resultset=null;
         String[] types= {"TABLE"};
         try {
             DatabaseMetaData databaseMetaData=conn.getMetaData();
-            resultset=databaseMetaData.getTables(operationLoggerConfig.getDatabaseName(),null,tableName,types);
-            //System.out.println("连接数据库，检索表是否存在");
+            resultset=databaseMetaData.getTables(OperationLoggerConfig.getDatabaseName(),null,tableName,types);
             if(resultset.next()){
-                //System.out.println("连接数据库，检索表存在");
                 return true;
             }
         }catch(Exception e){
@@ -82,24 +87,39 @@ public class OperationLoggerDao {
         }
        return false;
     }
-
+/**
+ * 日志插入数据库
+ * 如果operation_logger表不存在，首选执行创建表
+ * */
     public Integer insertOperationLogger(OperLog operLog) throws SQLException {
-        //System.out.println("进入 insertOperationLogger()");
         int intResult=0;
         try {
-            //System.out.println("即将判断表是否存在");
             if (!init()) {
                 getJdbcTemplate().execute(create);
-                //System.out.println("完成创建表");
             }
             String sql = "insert into operation_logger(oper_user_id,oper_api_name,oper_method,oper_ip,oper_time,oper_type,oper_url,oper_args,oper_result,system_id) values(?,?,?,?,?,?,?,?,?,?)";
-            //System.out.println("即将插入数据");
             intResult=getJdbcTemplate().update(sql, operLog.getOperUserID(), operLog.getOperApiName(), operLog.getOperMethod(), operLog.getOperIP(), operLog.getOperTime(), operLog.getOperType(), operLog.getOperURL(), operLog.getOperArgs(), operLog.getOperReuslt(),operLog.getOperSystemID());
-            //System.out.println("完成插入数据");
             return intResult;
         }catch (Exception e){
             System.out.println("perationLoggerDao->insertOperationLogger:\n"+e.getMessage());
             return intResult;
+        }
+    }
+
+    /**
+     * 日志查询
+     * */
+    public String selectInfo() throws Exception{
+        String sql="select * from operation_logger";
+        try{
+            List result_list=getJdbcTemplate().queryForList(sql);
+            for(int i=0;i<result_list.size();i++){
+                System.out.println(result_list.get(i));
+            }
+            return null;
+        }catch(Exception e){
+            System.out.println("perationLoggerDao->selectInfo:\n"+e.getMessage());
+            return null;
         }
     }
 }

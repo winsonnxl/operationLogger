@@ -29,7 +29,6 @@ public class aopTestController {
         operLog.setOperApiName("插入数据库API Name");
         operLog.setOperMethod("插入Method");
         try {
-            //operationLoggerDao.insertOperationLogger(operLog);
             return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
         }catch (Exception e){
             System.out.println("aopTestController->useApiLog:Exception \n");e.getMessage();

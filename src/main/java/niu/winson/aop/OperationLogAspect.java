@@ -192,11 +192,15 @@ public class OperationLogAspect {
                     byte[] decoded = Base64.decodeBase64(parts[1]);
                     String token_payload = new String(decoded);
                     JsonNode jsonNode = mapper.readTree(token_payload);
-                    JsonNode name = jsonNode.get("id");
+                    JsonNode name = jsonNode.get("userId");
                     if(name==null){
                         return "Token参数异常";
                     }
-                    return name.textValue();
+                    String text_name=name.toString();
+                    if(text_name.contains("\"")){
+                       return name.textValue();
+                    }
+                    return name.toString();
                 }
             }
         } catch (Exception e) {
