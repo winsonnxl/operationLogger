@@ -41,8 +41,15 @@ public class ResultVO<T> implements Serializable {
 
     private String str_get_SystemID;
 
-    public ResultVO(String errorCode, String errorMsg, T data) {
-        if (CheckSystemID()) {
+   /***
+    * 无参构造方法，OpenFeign远程调用使用
+    * */
+    public ResultVO(){
+
+    }
+
+    public ResultVO(String errorCode, String errorMsg, T data, Boolean checkSystemID_flag) {
+        if (CheckSystemID(checkSystemID_flag)) {
             setSystem_id(str_get_SystemID);
             setError_code(getError_code());
             setError_msg(getError_msg());
@@ -55,8 +62,22 @@ public class ResultVO<T> implements Serializable {
         setData(data);
     }
 
-    public ResultVO(ErrorCode errorCode, T data) {
-        if (CheckSystemID()) {
+    public ResultVO(String errorCode, String errorMsg, T data) {
+        if (CheckSystemID(true)) {
+            setSystem_id(str_get_SystemID);
+            setError_code(getError_code());
+            setError_msg(getError_msg());
+        } else {
+            //setSystem_id(getSystemID());
+            setSystem_id(str_get_SystemID);
+            setError_code(errorCode);
+            setError_msg(errorMsg);
+        }
+        setData(data);
+    }
+
+    public ResultVO(ErrorCode errorCode, T data, Boolean checkSystemID_flag) {
+        if (CheckSystemID(checkSystemID_flag)) {
             setSystem_id(str_get_SystemID);
             setError_code(getError_code());
             setError_msg(getError_msg());
@@ -69,9 +90,22 @@ public class ResultVO<T> implements Serializable {
 
         setData(data);
     }
+    public ResultVO(ErrorCode errorCode, T data) {
+        if (CheckSystemID(true)) {
+            setSystem_id(str_get_SystemID);
+            setError_code(getError_code());
+            setError_msg(getError_msg());
+        } else {
+            //setSystem_id(getSystemID());
+            setSystem_id(str_get_SystemID);
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
+        }
 
-    public ResultVO(ErrorCode errorCode) {
-        if (CheckSystemID()) {
+        setData(data);
+    }
+    public ResultVO(ErrorCode errorCode, Boolean checkSystemID_flag) {
+        if (CheckSystemID(checkSystemID_flag)) {
             setSystem_id( str_get_SystemID);
             setError_code(getError_code());
             setError_msg(getError_msg());
@@ -83,7 +117,33 @@ public class ResultVO<T> implements Serializable {
         }
 
     }
+    public ResultVO(ErrorCode errorCode) {
+        if (CheckSystemID(true)) {
+            setSystem_id( str_get_SystemID);
+            setError_code(getError_code());
+            setError_msg(getError_msg());
+        } else {
+            //setSystem_id(getSystemID());
+            setSystem_id(str_get_SystemID);
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
+        }
 
+    }
+//
+//    public ResultVO(ErrorCode errorCode) {
+//        if (CheckSystemID(checkSystemID_flag)) {
+//            setSystem_id( str_get_SystemID);
+//            setError_code(getError_code());
+//            setError_msg(getError_msg());
+//        } else {
+//            //setSystem_id(getSystemID());
+//            setSystem_id(str_get_SystemID);
+//            setError_code(errorCode.getCode());
+//            setError_msg(errorCode.getMsg());
+//        }
+//
+//    }
     @Override
     public String toString() {
         return "ResultVO{" +
@@ -97,8 +157,10 @@ public class ResultVO<T> implements Serializable {
     /**
      * 核对请求接口是不是为当前系统
      */
-    private Boolean CheckSystemID() {
-        //String token_header_systemid = getSystemID();
+    private Boolean CheckSystemID(Boolean check_flag) {
+        if(check_flag==false){
+            return false;
+        }
         str_get_SystemID=getSystemID();
         try {
             if (!OperationLoggerConfig.SystemID.equals("NULL")) {
@@ -144,7 +206,7 @@ public class ResultVO<T> implements Serializable {
                     byte[] decoded = Base64.decodeBase64(parts[1]);
                     String token_payload = new String(decoded);
                     JsonNode jsonNode = mapper.readTree(token_payload);
-                    JsonNode system = jsonNode.get("system");
+                    JsonNode system = jsonNode.get("systemId");
                     if(system==null){
                         return "token参数异常";
                     }
@@ -156,7 +218,7 @@ public class ResultVO<T> implements Serializable {
                 }
             }
         } catch (Exception e) {
-            System.out.println("ResultVO->getSystemID: Exception \n" + e.getMessage());
+            //System.out.println("ResultVO->getSystemID: Exception \n" + e.getMessage());
             return "参数异常";
         }
 
