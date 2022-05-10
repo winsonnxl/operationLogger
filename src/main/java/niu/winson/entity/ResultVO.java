@@ -10,9 +10,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 
-// 统一请求的返回对象
-public class ResultVO<T> {
+/**
+ * @author Winson
+ * 统一请求的返回对象
+ */
+public class ResultVO<T> implements Serializable {
+    static final long serialVersionUID = 1L;
 
     /**
      * "对应平台编码"
