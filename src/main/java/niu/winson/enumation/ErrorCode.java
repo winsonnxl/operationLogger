@@ -27,8 +27,8 @@ public enum ErrorCode {
     QUOTE_ERROR("700002", "该记录已被引用"),
     QRCODE_ERROR("700003", "生成二维码失败"),
     //未知错误码
-    UNKNOWN_ERROR("900001","未知错误异常");
-
+    UNKNOWN_ERROR("900001","未知错误异常"),
+    WORKING_ERROR("900002","业务执行异常");
     private String code;
     private String msg;
 
