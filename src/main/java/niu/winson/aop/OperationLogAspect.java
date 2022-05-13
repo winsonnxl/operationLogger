@@ -16,6 +16,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -37,6 +39,8 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 public class OperationLogAspect {
+    Logger log=LoggerFactory.getLogger(OperationLogAspect.class);
+
     private static final String UNKNOWN = "unknown";
     private final OperLog operlog = new OperLog();
 
@@ -52,7 +56,7 @@ public class OperationLogAspect {
 
     @Around("OperationLogger() && @annotation(operationLogger)")
     public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperationLogger operationLogger) throws Throwable,Exception {
-        //try {
+        try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
 
@@ -74,24 +78,24 @@ public class OperationLogAspect {
             operlog.setOperSystemID(operationLoggerConfig.getSystemID());
             Object obj = proceedingJoinPoint.proceed();
             return obj;
-        //} catch (Exception e) {
-           // System.out.println("OperationLogAspect->aroundMethod:Exception \n"+e.getMessage());
-           // return null;
-       // }
+        } catch (Exception e) {
+            log.error("OperationLogAspect->aroundMethod:Exception \n"+e.getMessage());
+            return null;
+        }
     }
 
     @AfterReturning(pointcut = "OperationLogger()", returning = "msg")
     public void afterReturningMethod(ResultVO<Object> msg) throws Exception{
-        //try {
+        try {
             if (msg.getError_code() == ErrorCode.SUCCESS.getCode() || operationLoggerConfig.getFailLog()) {
                 operlog.setOperReuslt(msg.toString());
                 if(operationLoggerDao.insertOperationLogger(operlog)!=1){
-                    System.out.println("@AfterReturnning: 数据插入失败！\n");
+                    log.info("@AfterReturnning: 数据插入失败！\n");
                 }
             }
-       // } catch (Exception e) {
-        //    System.out.println("@AfterReturnning: 数据库操作失败！\n" + e.getMessage());
-       // }
+        } catch (Exception e) {
+            log.info("@AfterReturnning: 数据库操作失败！\n" + e.getMessage());
+        }
     }
 
     @After("OperationLogger()")
@@ -154,7 +158,7 @@ public class OperationLogAspect {
             try {
                 ip = InetAddress.getLocalHost().getHostAddress();
             } catch (Exception e) {
-                System.out.println("OperationLogAspect->getIp->Exception \n"+e.getMessage());
+                log.error("OperationLogAspect->getIp->Exception \n"+e.getMessage());
             }
         }
         return ip;
@@ -164,10 +168,15 @@ public class OperationLogAspect {
      * 获取传入参数
      */
     private String getArgs(JoinPoint joinPoint) {
-        Object[] args = joinPoint.getArgs();
-        if (ArrayUtils.isNotEmpty(args)) {
-            List<Object> logArgs = Arrays.stream(args).filter(arg -> (!(arg instanceof HttpServletRequest) || !(arg instanceof HttpServletResponse))).collect(Collectors.toList());
-            return logArgs.toString();
+        try {
+            Object[] args = joinPoint.getArgs();
+            if (ArrayUtils.isNotEmpty(args)) {
+                List<Object> logArgs = Arrays.stream(args).filter(arg -> (!(arg instanceof HttpServletRequest) || !(arg instanceof HttpServletResponse))).collect(Collectors.toList());
+                return logArgs.toString();
+            }
+        }catch (Exception e){
+            log.error("OperationLogAspect->getArgs: "+e.getMessage());
+            return "获取入参异常";
         }
         return "参数空";
     }
@@ -204,7 +213,7 @@ public class OperationLogAspect {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Token解析错误，未找到‘id’\n" + "->"+e.getMessage());
+            log.error("Token解析错误，未找到‘id’\n" + "->"+e.getMessage());
             return "Token参数异常";
         }
 

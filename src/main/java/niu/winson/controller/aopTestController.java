@@ -7,6 +7,8 @@ import niu.winson.entity.ResultVO;
 import niu.winson.enumation.ErrorCode;
 import niu.winson.enumation.OperationType;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/aop")
 public class aopTestController {
-
+    Logger log= LoggerFactory.getLogger(aopTestController.class);
     @OperationLogger(Name = "捕捉useApiLog", Type = OperationType.UPDATE)
     @RequestMapping(value = "/test", method = RequestMethod.POST)
     public ResultVO useApiLog(@RequestBody String args) {
@@ -29,9 +31,10 @@ public class aopTestController {
         operLog.setOperApiName("插入数据库API Name");
         operLog.setOperMethod("插入Method");
         try {
-            return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
+//            return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
+            return ReturnValue.MESSAGE("9999","测试不检测SystemID",null,false);
         }catch (Exception e){
-            System.out.println("aopTestController->useApiLog:Exception \n");e.getMessage();
+            log.error("aopTestController->useApiLog:Exception \n");e.getMessage();
             return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
         }
 

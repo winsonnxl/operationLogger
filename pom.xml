@@ -7,7 +7,7 @@
     <groupId>niu.winson</groupId>
     <artifactId>operationlogger</artifactId>
     <packaging>jar</packaging>
-    <version>2.05</version>
+    <version>2.06</version>
 
     <developers>
         <developer>
@@ -21,7 +21,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
-        <springfox.version>2.9.2</springfox.version>
     </properties>
 
     <dependencies>
@@ -67,12 +66,12 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/*.yml</exclude>
-                    <exclude>**/*.properties</exclude>
-                    <exclude>**/*.xml</exclude>
-                    <exclude>niu.winson.OperationLoggerApplication.java</exclude>
-                </excludes>
+<!--                <excludes>-->
+<!--                    <exclude>**/*.yml</exclude>-->
+<!--                    <exclude>**/*.properties</exclude>-->
+<!--                    <exclude>**/*.xml</exclude>-->
+<!--                    <exclude>niu.winson.OperationLoggerApplication.java</exclude>-->
+<!--                </excludes>-->
                 <filtering>true</filtering>
             </resource>
         </resources>

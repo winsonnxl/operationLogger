@@ -1,9 +1,9 @@
 package niu.winson.dao;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.mysql.cj.xdevapi.JsonArray;
 import niu.winson.entity.OperLog;
 import niu.winson.entity.OperationLoggerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -15,14 +15,13 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author EDZ
  */
 @Repository
 public class OperationLoggerDao {
-
+    Logger log= LoggerFactory.getLogger(OperationLoggerDao.class);
     @Autowired
     OperationLoggerConfig operationLoggerConfig;
     /**
@@ -45,7 +44,7 @@ public class OperationLoggerDao {
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台操作日志表';";
 
 
-    public DriverManagerDataSource getDataSources()  {
+    public DriverManagerDataSource getDataSources(){
         try {
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
             dataSource.setDriverClassName(operationLoggerConfig.getDriverClassName());
@@ -54,22 +53,22 @@ public class OperationLoggerDao {
             dataSource.setPassword(operationLoggerConfig.getPassword());
             return dataSource;
         }catch(Exception e){
-            System.out.println("OperationLoggerDao.java->getDataSources()  数据据库配置读取错误！！！\n"+e.getMessage());
+            log.error("OperationLoggerDao.java->getDataSources()  数据据库配置读取错误！！！\n"+e.getMessage());
             return null;
         }
     }
 
-    public JdbcTemplate getJdbcTemplate() {
+    public JdbcTemplate getJdbcTemplate(){
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSources());
             return jdbcTemplate;
         }catch (Exception e){
-            System.out.println("OperationLoggerDao->JdbcTemplate:\n"+e.getMessage());
+            log.error("OperationLoggerDao->JdbcTemplate:\n"+e.getMessage());
             return null;
         }
     }
 
-    public boolean init() throws SQLException{
+    public boolean init() throws Exception{
         Connection conn= getJdbcTemplate().getDataSource().getConnection();
         ResultSet resultset=null;
         String[] types= {"TABLE"};
@@ -80,7 +79,7 @@ public class OperationLoggerDao {
                 return true;
             }
         }catch(Exception e){
-            System.out.println("perationLoggerDao->init:\n"+e.getMessage());
+            log.error("perationLoggerDao->init:\n"+e.getMessage());
         }finally {
             resultset.close();
             conn.close();
@@ -91,35 +90,26 @@ public class OperationLoggerDao {
  * 日志插入数据库
  * 如果operation_logger表不存在，首选执行创建表
  * */
-    public Integer insertOperationLogger(OperLog operLog) throws SQLException {
+    public Integer insertOperationLogger(OperLog operLog) throws Exception {
         int intResult=0;
-        try {
             if (!init()) {
                 getJdbcTemplate().execute(create);
             }
             String sql = "insert into operation_logger(oper_user_id,oper_api_name,oper_method,oper_ip,oper_time,oper_type,oper_url,oper_args,oper_result,system_id) values(?,?,?,?,?,?,?,?,?,?)";
             intResult=getJdbcTemplate().update(sql, operLog.getOperUserID(), operLog.getOperApiName(), operLog.getOperMethod(), operLog.getOperIP(), operLog.getOperTime(), operLog.getOperType(), operLog.getOperURL(), operLog.getOperArgs(), operLog.getOperReuslt(),operLog.getOperSystemID());
             return intResult;
-        }catch (Exception e){
-            System.out.println("perationLoggerDao->insertOperationLogger:\n"+e.getMessage());
-            return intResult;
-        }
     }
 
     /**
      * 日志查询
      * */
-    public String selectInfo() throws Exception{
+    public String selectInfo(){
         String sql="select * from operation_logger";
-        try{
             List result_list=getJdbcTemplate().queryForList(sql);
             for(int i=0;i<result_list.size();i++){
-                System.out.println(result_list.get(i));
+                log.info(result_list.get(i).toString());
             }
             return null;
-        }catch(Exception e){
-            System.out.println("perationLoggerDao->selectInfo:\n"+e.getMessage());
-            return null;
-        }
+
     }
 }
