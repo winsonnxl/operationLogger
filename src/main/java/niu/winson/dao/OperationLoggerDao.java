@@ -7,13 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
