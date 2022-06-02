@@ -173,48 +173,6 @@ public class ResultVO<T> implements Serializable {
         }
     }
 
-    /**
-     * 通过接口请求，获取Token或Header中的System编码
-     */
-//    private String getSystemID() {
-//        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        HttpServletRequest request = attributes.getRequest();
-//        String token = request.getHeader("Token");
-//        String authorization = request.getHeader("Authorization");
-//        String systemid = request.getHeader("SystemID");
-//        String[] parts = null;
-//        if (StringUtils.isNotEmpty(token)) {
-//            parts = token.split("\\.");
-//        }
-//        if (StringUtils.isNotEmpty(authorization)) {
-//            parts = authorization.split("\\.");
-//        }
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            if (parts != null) {
-//                if (!parts[1].isEmpty()) {
-//                    byte[] decoded = Base64.decodeBase64(parts[1]);
-//                    String token_payload = new String(decoded);
-//                    JsonNode jsonNode = mapper.readTree(token_payload);
-//                    JsonNode system = jsonNode.get("systemId");
-//                    if(system==null){
-//                        return "token参数异常";
-//                    }
-//                        return system.textValue();
-//                }
-//            } else {
-//                if (StringUtils.isNotEmpty(systemid)) {
-//                    return systemid.trim();
-//                }
-//            }
-//        } catch (Exception e) {
-//            //System.out.println("ResultVO->getSystemID: Exception \n" + e.getMessage());
-//            return "参数异常";
-//        }
-//
-//        return "参数空";
-//    }
-
     public String getError_code() {
         return error_code;
     }
