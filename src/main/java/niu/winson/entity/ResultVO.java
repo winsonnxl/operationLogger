@@ -3,6 +3,7 @@ package niu.winson.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import niu.winson.commons.OperationInfo;
 import niu.winson.enumation.ErrorCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -40,6 +41,8 @@ public class ResultVO<T> implements Serializable {
     private T data;
 
     private String str_get_SystemID;
+
+    private OperationInfo operationInfo=new OperationInfo();
 
    /***
     * 无参构造方法，OpenFeign远程调用使用
@@ -130,20 +133,7 @@ public class ResultVO<T> implements Serializable {
         }
 
     }
-//
-//    public ResultVO(ErrorCode errorCode) {
-//        if (CheckSystemID(checkSystemID_flag)) {
-//            setSystem_id( str_get_SystemID);
-//            setError_code(getError_code());
-//            setError_msg(getError_msg());
-//        } else {
-//            //setSystem_id(getSystemID());
-//            setSystem_id(str_get_SystemID);
-//            setError_code(errorCode.getCode());
-//            setError_msg(errorCode.getMsg());
-//        }
-//
-//    }
+
     @Override
     public String toString() {
         return "ResultVO{" +
@@ -161,7 +151,7 @@ public class ResultVO<T> implements Serializable {
         if(check_flag==false){
             return false;
         }
-        str_get_SystemID=getSystemID();
+        str_get_SystemID=operationInfo.getSystemIdByHeader();
         try {
             if (!OperationLoggerConfig.SystemID.equals("NULL")) {
                 if (!str_get_SystemID.equals(OperationLoggerConfig.SystemID)) {
@@ -186,44 +176,44 @@ public class ResultVO<T> implements Serializable {
     /**
      * 通过接口请求，获取Token或Header中的System编码
      */
-    private String getSystemID() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-        String token = request.getHeader("Token");
-        String authorization = request.getHeader("Authorization");
-        String systemid = request.getHeader("SystemID");
-        String[] parts = null;
-        if (StringUtils.isNotEmpty(token)) {
-            parts = token.split("\\.");
-        }
-        if (StringUtils.isNotEmpty(authorization)) {
-            parts = authorization.split("\\.");
-        }
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            if (parts != null) {
-                if (!parts[1].isEmpty()) {
-                    byte[] decoded = Base64.decodeBase64(parts[1]);
-                    String token_payload = new String(decoded);
-                    JsonNode jsonNode = mapper.readTree(token_payload);
-                    JsonNode system = jsonNode.get("systemId");
-                    if(system==null){
-                        return "token参数异常";
-                    }
-                        return system.textValue();
-                }
-            } else {
-                if (StringUtils.isNotEmpty(systemid)) {
-                    return systemid.trim();
-                }
-            }
-        } catch (Exception e) {
-            //System.out.println("ResultVO->getSystemID: Exception \n" + e.getMessage());
-            return "参数异常";
-        }
-
-        return "参数空";
-    }
+//    private String getSystemID() {
+//        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+//        HttpServletRequest request = attributes.getRequest();
+//        String token = request.getHeader("Token");
+//        String authorization = request.getHeader("Authorization");
+//        String systemid = request.getHeader("SystemID");
+//        String[] parts = null;
+//        if (StringUtils.isNotEmpty(token)) {
+//            parts = token.split("\\.");
+//        }
+//        if (StringUtils.isNotEmpty(authorization)) {
+//            parts = authorization.split("\\.");
+//        }
+//        try {
+//            ObjectMapper mapper = new ObjectMapper();
+//            if (parts != null) {
+//                if (!parts[1].isEmpty()) {
+//                    byte[] decoded = Base64.decodeBase64(parts[1]);
+//                    String token_payload = new String(decoded);
+//                    JsonNode jsonNode = mapper.readTree(token_payload);
+//                    JsonNode system = jsonNode.get("systemId");
+//                    if(system==null){
+//                        return "token参数异常";
+//                    }
+//                        return system.textValue();
+//                }
+//            } else {
+//                if (StringUtils.isNotEmpty(systemid)) {
+//                    return systemid.trim();
+//                }
+//            }
+//        } catch (Exception e) {
+//            //System.out.println("ResultVO->getSystemID: Exception \n" + e.getMessage());
+//            return "参数异常";
+//        }
+//
+//        return "参数空";
+//    }
 
     public String getError_code() {
         return error_code;

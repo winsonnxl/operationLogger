@@ -3,6 +3,7 @@ package niu.winson.aop;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import niu.winson.annotation.OperationLogger;
+import niu.winson.commons.OperationInfo;
 import niu.winson.dao.OperationLoggerDao;
 import niu.winson.entity.OperLog;
 import niu.winson.entity.OperationLoggerConfig;
@@ -49,6 +50,8 @@ public class OperationLogAspect {
     @Autowired
     OperationLoggerConfig operationLoggerConfig;
 
+    OperationInfo operationinfo=new OperationInfo();
+
     @Pointcut("@annotation(niu.winson.annotation.OperationLogger)")
     public void OperationLogger() {
     }
@@ -69,13 +72,14 @@ public class OperationLogAspect {
             //获取操作者IP
             operlog.setOperIP(getIp(request));
             //获取操作者用户ID，暂时用占位符代替
-            operlog.setOperUserID(getUserID(request));
+            operlog.setOperUserID(operationinfo.getUserID());
             //System.out.println("OperUserID="+operlog.getOperUserID());
             operlog.setOperArgs(getArgs(proceedingJoinPoint));
             operlog.setOperType(operationLogger.Type().getValue());
             operlog.setOperApiName(operationLogger.Name());
             operlog.setOperTime(formatter.format(date));
-            operlog.setOperSystemID(operationLoggerConfig.getSystemID());
+            //operlog.setOperSystemID(operationLoggerConfig.getSystemID());
+            operlog.setOperSystemID(operationinfo.getSystemID());
             Object obj = proceedingJoinPoint.proceed();
             return obj;
         } catch (Exception e) {
@@ -184,40 +188,42 @@ public class OperationLogAspect {
     /***
      * 获取header中的 Token 或 Authorization 的 UserID
      * */
-    private String getUserID(HttpServletRequest request) {
-        String token = request.getHeader("Token");
-        String authorization = request.getHeader("Authorization");
-        String[] parts = null;
-        if (StringUtils.isNotEmpty(token)) {
-            parts = token.split("\\.");
-        }
-        if (StringUtils.isNotEmpty(authorization)) {
-            parts = authorization.split("\\.");
-        }
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            if (parts!=null) {
-                if (!parts[1].isEmpty()) {
-                    byte[] decoded = Base64.decodeBase64(parts[1]);
-                    String token_payload = new String(decoded);
-                    JsonNode jsonNode = mapper.readTree(token_payload);
-                    JsonNode name = jsonNode.get("userId");
-                    if(name==null){
-                        return "Token参数异常";
-                    }
-                    String text_name=name.toString();
-                    if(text_name.contains("\"")){
-                       return name.textValue();
-                    }
-                    return name.toString();
-                }
-            }
-        } catch (Exception e) {
-            log.error("Token解析错误，未找到‘id’\n" + "->"+e.getMessage());
-            return "Token参数异常";
-        }
+//    private String getUserID(HttpServletRequest request) {
+//        String token = request.getHeader("Token");
+//        String authorization = request.getHeader("Authorization");
+//        String[] parts = null;
+//        if (StringUtils.isNotEmpty(token)) {
+//            parts = token.split("\\.");
+//        }
+//        if (StringUtils.isNotEmpty(authorization)) {
+//            parts = authorization.split("\\.");
+//        }
+//        try {
+//            ObjectMapper mapper = new ObjectMapper();
+//            if (parts!=null) {
+//                if (!parts[1].isEmpty()) {
+//                    byte[] decoded = Base64.decodeBase64(parts[1]);
+//                    String token_payload = new String(decoded);
+//                    JsonNode jsonNode = mapper.readTree(token_payload);
+//                    JsonNode name = jsonNode.get("userId");
+//                    if(name==null){
+//                        return "Token参数异常";
+//                    }
+//                    String text_name=name.toString();
+//                    if(text_name.contains("\"")){
+//                       return name.textValue();
+//                    }
+//                    return name.toString();
+//                }
+//            }
+//        } catch (Exception e) {
+//            log.error("Token解析错误，未找到‘id’\n" + "->"+e.getMessage());
+//            return "Token参数异常";
+//        }
+//
+//        return "Token参数空";
+//    }
 
-        return "Token参数空";
-    }
+
 }
 
