@@ -19,7 +19,7 @@ public class ReturnValue {
         return new ResultVO(ErrorCode.SUCCESS);
     }
 
-    public static ResultVO SUCCESS(Boolean checkSystemID_flag){
+    public static ResultVO SUCCESS_NOT_CheckSystemID(Boolean checkSystemID_flag){
         return new ResultVO(ErrorCode.SUCCESS,checkSystemID_flag);
     }
 

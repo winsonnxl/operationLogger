@@ -55,7 +55,7 @@ public class OperationInfo {
                 }
             }
         } catch (Exception e) {
-            log.error("ResultVO->getSystemID: Exception \n" + e.getMessage());
+            log.error("OperationInfo->getSystemIdByHeader: Exception \n" + e.getMessage());
             return "参数异常";
         }
 
@@ -68,10 +68,21 @@ public class OperationInfo {
      * 如果为空，读取header中的SystemID
      * **/
     public String getSystemID(){
-        if(!OperationLoggerConfig.SystemID.isEmpty()){
-            return getSystemIdByHeader();
+        try {
+            if (!OperationLoggerConfig.SystemID.isEmpty()) {
+                return getSystemIdByHeader();
+            }
+
+        }catch (Exception e){
+            log.error("OperationInfo->getSystemID()="+e.getMessage());
+            return "OperationInfo->getSystemID() error";
         }
-        return OperationLoggerConfig.SystemID;
+        if(OperationLoggerConfig.SystemID.isEmpty()){
+            log.warn("OperationInfo->getSystemID,header、application均为空\n");
+            return "SystemID均为空";
+        }else {
+            return OperationLoggerConfig.SystemID;
+        }
     }
 
 
@@ -109,7 +120,7 @@ public class OperationInfo {
                 }
             }
         } catch (Exception e) {
-            log.error("Token解析错误，未找到‘id’\n" + "->"+e.getMessage());
+            log.error("OperationInfo->getUserID,Token解析错误，未找到‘id’\n" + "->"+e.getMessage());
             return "Token参数异常";
         }
 

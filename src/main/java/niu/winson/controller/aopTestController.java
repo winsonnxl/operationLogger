@@ -32,7 +32,8 @@ public class aopTestController {
         operLog.setOperMethod("插入Method");
         try {
 //            return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
-            return ReturnValue.MESSAGE("9999","测试不检测SystemID",null,false);
+//            return ReturnValue.MESSAGE("9999","测试不检测SystemID",null,false)
+            return ReturnValue.MESSAGE("9999","测试不检测SystemID",null);
         }catch (Exception e){
             log.error("aopTestController->useApiLog:Exception \n");e.getMessage();
             return ReturnValue.FAIL(ErrorCode.DATABASE_ERROR);
