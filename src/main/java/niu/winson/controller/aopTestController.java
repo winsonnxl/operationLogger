@@ -55,7 +55,8 @@ public class aopTestController {
         map.put("decoded", getDecoded);
         map.put("show_msg","Greate!!!");
         map.put("map1",map1);
-        return ReturnValue.SUCCESS(map);
+//        return ReturnValue.SUCCESS(map);
+        return ReturnValue.SUCCESS_NOT_CHECKSYSTEMID();
     }
 
     @OperationLogger(Name = "测试空参数",Type= OperationType.SELECT)

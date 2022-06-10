@@ -66,12 +66,12 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/*.yml</exclude>
-                    <exclude>**/*.properties</exclude>
-                    <exclude>**/*.xml</exclude>
-                    <exclude>niu.winson.OperationLoggerApplication.java</exclude>
-                </excludes>
+<!--                <excludes>-->
+<!--                    <exclude>**/*.yml</exclude>-->
+<!--                    <exclude>**/*.properties</exclude>-->
+<!--                    <exclude>**/*.xml</exclude>-->
+<!--                    <exclude>niu.winson.OperationLoggerApplication.java</exclude>-->
+<!--                </excludes>-->
                 <filtering>true</filtering>
             </resource>
         </resources>
