@@ -57,40 +57,26 @@ public class OperationLogAspect {
     @Around("OperationLogger() && @annotation(operationLogger)")
     public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperationLogger operationLogger) throws Throwable{
         try {
-//            log.info("开始aroundMethod\n");
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
-//            log.info("获取request\n");
             Date date = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             //获取方法名（Function name）
             operlog.setOperMethod(getMethodName(proceedingJoinPoint));
-//            log.info("插入setOperMethod\n");
             //获取请求RUL
             operlog.setOperURL(request.getRequestURL().toString());
-//            log.info("插入setOperURL\n");
             //获取操作者IP
             operlog.setOperIP(getIp(request));
-//            log.info("插入setOperIP\n");
             //获取操作者用户ID，暂时用占位符代替
             operlog.setOperUserID(operationinfo.getUserID());
-//            log.info("插入OperUserID="+operlog.getOperUserID()+"\n");
             operlog.setOperArgs(getArgs(proceedingJoinPoint));
-//            log.info("插入setOperArgs=\n");
             operlog.setOperType(operationLogger.Type().getValue());
-//            log.info("插入setOperType\n");
             operlog.setOperApiName(operationLogger.Name());
-//            log.info("插入setApiName\n");
             operlog.setOperTime(formatter.format(date));
-//            log.info("插入setOperTime\n");
-            //operlog.setOperSystemID(operationLoggerConfig.getSystemID());
             operlog.setOperSystemID(operationinfo.getSystemID());
-//            log.info("插入setOperSystemID\n");
-//            Object obj = proceedingJoinPoint.proceed();
-//            log.info("来到最后！");
             return proceedingJoinPoint.proceed();
         } catch (Throwable e) {
-            //log.error("OperationLogAspect->aroundMethod:Exception \n"+e.getMessage());
+            log.error("OperationLogAspect->aroundMethod:Exception \n"+e.getMessage());
             throw e;
 //            return "ASP Error!";
         }
@@ -98,7 +84,6 @@ public class OperationLogAspect {
 
     @AfterReturning(pointcut = "OperationLogger()", returning = "msg")
     public void afterReturningMethod(ResultVO<Object> msg) throws Throwable{
-        log.info("进入afterReturningMethod");
         try {
             if (msg.getError_code() == ErrorCode.SUCCESS.getCode() || operationLoggerConfig.getFailLog()) {
 //                log.info("进入setOperResult:ErroeCode="+msg.getError_code()+",FailLog="+operationLoggerConfig.getFailLog()+"\n");
