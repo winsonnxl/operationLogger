@@ -52,10 +52,11 @@ public class ResultVO<T> implements Serializable {
     }
 
     public ResultVO(String errorCode, String errorMsg, T data, Boolean checkSystemID_flag) {
-        if (CheckSystemID(checkSystemID_flag)) {
+        if (CheckSystemID(checkSystemID_flag))
+        {
             setSystem_id(str_get_SystemID);
-            setError_code(getError_code());
-            setError_msg(getError_msg());
+            setError_code(errorCode);
+            setError_msg(errorMsg);
         } else {
             //setSystem_id(getSystemID());
             setSystem_id(str_get_SystemID);
@@ -68,8 +69,8 @@ public class ResultVO<T> implements Serializable {
     public ResultVO(String errorCode, String errorMsg, T data) {
         if (CheckSystemID(true)) {
             setSystem_id(str_get_SystemID);
-            setError_code(getError_code());
-            setError_msg(getError_msg());
+            setError_code(errorCode);
+            setError_msg(errorMsg);
         } else {
             //setSystem_id(getSystemID());
             setSystem_id(str_get_SystemID);
@@ -82,8 +83,8 @@ public class ResultVO<T> implements Serializable {
     public ResultVO(ErrorCode errorCode, T data, Boolean checkSystemID_flag) {
         if (CheckSystemID(checkSystemID_flag)) {
             setSystem_id(str_get_SystemID);
-            setError_code(getError_code());
-            setError_msg(getError_msg());
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
         } else {
             //setSystem_id(getSystemID());
             setSystem_id(str_get_SystemID);
@@ -96,8 +97,8 @@ public class ResultVO<T> implements Serializable {
     public ResultVO(ErrorCode errorCode, T data) {
         if (CheckSystemID(true)) {
             setSystem_id(str_get_SystemID);
-            setError_code(getError_code());
-            setError_msg(getError_msg());
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
         } else {
             //setSystem_id(getSystemID());
             setSystem_id(str_get_SystemID);
@@ -110,8 +111,8 @@ public class ResultVO<T> implements Serializable {
     public ResultVO(ErrorCode errorCode, Boolean checkSystemID_flag) {
         if (CheckSystemID(checkSystemID_flag)) {
             setSystem_id( str_get_SystemID);
-            setError_code(getError_code());
-            setError_msg(getError_msg());
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
         } else {
             //setSystem_id(getSystemID());
             setSystem_id(str_get_SystemID);
@@ -123,8 +124,8 @@ public class ResultVO<T> implements Serializable {
     public ResultVO(ErrorCode errorCode) {
         if (CheckSystemID(true)) {
             setSystem_id( str_get_SystemID);
-            setError_code(getError_code());
-            setError_msg(getError_msg());
+            setError_code(errorCode.getCode());
+            setError_msg(errorCode.getMsg());
         } else {
             //setSystem_id(getSystemID());
             setSystem_id(str_get_SystemID);

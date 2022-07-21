@@ -34,7 +34,8 @@ public class OperationLoggerDao {
             "  `oper_url` varchar(300) NOT NULL COMMENT '操作URL',\n" +
             "  `oper_type` varchar(10) NOT NULL COMMENT '操作类型',\n" +
             "  `oper_time` varchar(20) NOT NULL COMMENT '操作时间',\n" +
-            "  `oper_args` varchar(11000) NOT NULL COMMENT '传入参数',\n" +
+//            "  `oper_args` varchar(11000) NOT NULL COMMENT '传入参数',\n" +
+            "  `oper_args` text NOT NULL COMMENT '传入参数',\n" +
             "  `oper_result` varchar(4000) NOT NULL COMMENT '操作结果',\n" +
             "`system_id` varchar(60) NOT NULL COMMENT '系统编码,读取application.properties中niu.OperationLogger.System数值',\n"+
             "  PRIMARY KEY (`id`)\n" +
@@ -99,6 +100,8 @@ public class OperationLoggerDao {
         }catch(Exception e){
             log.error("OperationLoggerDao->insertOperationLogger数据库插入错误！！！\n"+e.getMessage());
             return intResult;
+        }finally {
+
         }
     }
 
