@@ -26,7 +26,7 @@ public class OperationLoggerDao {
      * */
     String tableName = "operation_logger";
     String create = "CREATE TABLE `operation_logger` (\n" +
-            "  `id` int(8) NOT NULL AUTO_INCREMENT COMMENT '主键自增',\n" +
+            "  `id` integer NOT NULL AUTO_INCREMENT COMMENT '主键自增',\n" +
             "  `oper_user_id` varchar(50) NOT NULL COMMENT '操作者ID',\n" +
             "  `oper_api_name` varchar(200) NOT NULL COMMENT 'API名称,读取@注解中的Name',\n" +
             "  `oper_method` varchar(200) NOT NULL COMMENT '操作方法',\n" +
@@ -36,7 +36,7 @@ public class OperationLoggerDao {
             "  `oper_time` varchar(20) NOT NULL COMMENT '操作时间',\n" +
 //            "  `oper_args` varchar(11000) NOT NULL COMMENT '传入参数',\n" +
             "  `oper_args` text NOT NULL COMMENT '传入参数',\n" +
-            "  `oper_result` varchar(4000) NOT NULL COMMENT '操作结果',\n" +
+            "  `oper_result` text NOT NULL COMMENT '操作结果',\n" +
             "`system_id` varchar(60) NOT NULL COMMENT '系统编码,读取application.properties中niu.OperationLogger.System数值',\n"+
             "  PRIMARY KEY (`id`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';";
@@ -71,9 +71,12 @@ public class OperationLoggerDao {
         ResultSet resultset=null;
         String[] types= {"TABLE"};
         try {
+            log.info("\n>>>>>>>>>进入init\n");
             DatabaseMetaData databaseMetaData=conn.getMetaData();
             resultset=databaseMetaData.getTables(OperationLoggerConfig.getDatabaseName(),null,tableName,types);
+            log.info("\n>>>>>>>>>配置完毕init\n");
             if(resultset.next()){
+                log.info("\n>>>>>>>>>执行完毕init\n");
                 return true;
             }
         }catch(Exception e){
