@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   Hello Wrold!
+   <button>发送一个 HTTP GET 请求并获取返回结果</button>
+</body>
+
+<script>
+    $(document).ready(function(){
+        $("button").click(function(){
+
+            $.ajax({
+                contentType:'application/json',
+                type:'POST',
+                url:'/aop/hello',
+                dataType:"json",
+                data:" ",
+                success:function(message){
+                    // var str=JSON.parse(message.data);
+                    // console.log(str.show_msg)
+                    console.log(message.data.map1.ccc);
+                }
+            })
+        });});
+</script>
+
+</html>
