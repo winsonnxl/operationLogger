@@ -1,0 +1,12 @@
+ CREATE TABLE `operation_logger` (`id` int(8) NOT NULL AUTO_INCREMENT COMMENT '主键自增' ,
+ `oper_user_id` varchar(50) NOT NULL COMMENT '操作者ID',
+ `oper_api_name` varchar(200) NOT NULL COMMENT 'API名称,读取@注解中的Name',
+ `oper_method` varchar(200) NOT NULL COMMENT '操作方法',
+ `oper_ip` varchar(20) NOT NULL COMMENT '操作人IP地址',
+ `oper_url` varchar(300) NOT NULL COMMENT '操作URL',
+ `oper_type` varchar(10) NOT NULL COMMENT '操作类型',
+ `oper_time` varchar(20) NOT NULL COMMENT '操作时间',
+`oper_args` text NOT NULL COMMENT '传入参数',
+`oper_result` text NOT NULL COMMENT '操作结果',
+`system_id` varchar(60) NOT NULL COMMENT '系统编码,读取application.properties中niu.OperationLogger.System数值',
+PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
