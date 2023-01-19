@@ -71,12 +71,12 @@ public class OperationLoggerDao {
         ResultSet resultset=null;
         String[] types= {"TABLE"};
         try {
-            log.info("\n>>>>>>>>>进入init\n");
+//            log.info("\n>>>>>>>>>进入init\n");
             DatabaseMetaData databaseMetaData=conn.getMetaData();
             resultset=databaseMetaData.getTables(OperationLoggerConfig.getDatabaseName(),null,tableName,types);
-            log.info("\n>>>>>>>>>配置完毕init\n");
+//            log.info("\n>>>>>>>>>配置完毕init\n");
             if(resultset.next()){
-                log.info("\n>>>>>>>>>执行完毕init\n");
+//                log.info("\n>>>>>>>>>执行完毕init\n");
                 return true;
             }
         }catch(Exception e){
